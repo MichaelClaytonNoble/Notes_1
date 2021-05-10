@@ -71,16 +71,26 @@ class Node {
     }
 }
 
-// Refactor the regular Stack below into a MinMaxStack!
-class Stack {
+class MinMaxStack {
     constructor() {
         this.top = null;
         this.bottom = null;
         this.length = 0;
+        this._max = [];
+        this._min = [];
     }
 
     push(val) {
         const newNode = new Node(val);
+
+        if (!this._min.length || newNode.value <= this._min[this._min.length - 1].value) {
+            this._min.push(newNode);
+        }
+
+        if (!this._max.length || newNode.value >= this._max[this._max.length - 1].value) {
+            this._max.push(newNode);
+        }
+
         if (!this.top) {
             this.top = newNode;
             this.bottom = newNode;
@@ -96,20 +106,37 @@ class Stack {
         if (!this.top) {
             return null;
         }
+
+        if (this.top.value === this._max[this._max.length - 1].value) {
+            this._max.pop();
+        }
+
+        if (this.top.value === this._min[this._min.length - 1].value) {
+            this._min.pop();
+        }
+
         const temp = this.top;
         if (this.top === this.bottom) {
             this.bottom = null;
         }
         this.top = this.top.next;
         this.length--;
-        return temp.value;
+        return temp;
     }
 
     size() {
         return this.length;
     }
-}
 
-// Forgetting something down here? 
+    min() {
+        return this._min[this._min.length - 1] || null;
+    }
+
+    max() {
+        return this._max[this._max.length - 1] || null;
+    }
+};
+
+
 exports.Node = Node;
-exports.Stack = Stack;
+exports.MinMaxStack = MinMaxStack;
