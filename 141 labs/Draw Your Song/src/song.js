@@ -1,11 +1,15 @@
 
-
+const ctx = document.getElementById("canvas").getContext('2d');
+const coords = {x: 0, y: 0};
 /**
  * Draws a single square of size 10 X 10 with the given color.
  * @param {string} color A color.
  */
 function square(color){
 
+  ctx.fillStyle = color;
+  ctx.fillRect(coords.x, coords.y, coords.x+1, coords.y+10);
+  coords.x+=1;
 }
 
 /**
@@ -16,8 +20,20 @@ function square(color){
  * 
  * @param {string} line - A line of text
  */
-function paintLine(){
+function paintLine(line){
+  function color(char){
+    let code = char.charCodeAt();
+    if( code < 70 ) return "blue";
+    if( code < 100 ) return "green";
+    if( code < 110 ) return "red";
+    if( code < 122 ) return "orange";
+    return "yellow";
+  }
 
+  line.split('').forEach( char=> {
+    square(color(char));
+  });
+  console.log(coords.x);
 }
 
 /**
@@ -29,12 +45,14 @@ function paintLine(){
 function picture(file){
 
   fetch(`/../data/${file}`)
-  .then( res => console.log(res) )
-
-  let reader = new FileReader();
-
-
-
+  .then( res => res.text())
+  .then( data => {
+    let lines = data.split("\n");
+    lines = lines.slice(1);
+    lines.forEach( line=>{
+      paintLine(line);
+    });
+  });
 }
 
 /**
