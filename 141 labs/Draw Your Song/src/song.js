@@ -8,8 +8,10 @@ const coords = {x: 0, y: 0};
 function square(color){
 
   ctx.fillStyle = color;
-  ctx.fillRect(coords.x, coords.y, coords.x+1, coords.y+10);
-  coords.x+=1;
+  ctx.beginPath();
+  ctx.fillRect(coords.x, coords.y, 10, 10);
+  ctx.closePath();
+  coords.x+=10;
 }
 
 /**
@@ -23,17 +25,16 @@ function square(color){
 function paintLine(line){
   function color(char){
     let code = char.charCodeAt();
-    if( code < 70 ) return "blue";
-    if( code < 100 ) return "green";
-    if( code < 110 ) return "red";
-    if( code < 122 ) return "orange";
-    return "yellow";
+    if( code < 70 ) return "green";
+    if( code < 100 ) return "yellow";
+    if( code < 110 ) return "cyan";
+    if( code < 122 ) return "red";
+    return "orange";
   }
 
   line.split('').forEach( char=> {
     square(color(char));
   });
-  console.log(coords.x);
 }
 
 /**
@@ -48,9 +49,10 @@ function picture(file){
   .then( res => res.text())
   .then( data => {
     let lines = data.split("\n");
-    lines = lines.slice(1);
     lines.forEach( line=>{
-      paintLine(line);
+      paintLine(line.trim());
+      coords.y+=10;
+      coords.x=0;
     });
   });
 }
@@ -62,8 +64,8 @@ function picture(file){
  */
 export function main(){
 
-  // let fileName = window.prompt("Enter filename: ");
-  let fileName = "s1.txt";
+  let fileName = window.prompt("Enter filename: ");
+  // let fileName = "s1.txt";
 
   picture(fileName);
 }
